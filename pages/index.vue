@@ -3,23 +3,7 @@
     <section class="intro">
       <h1>Get the latest tech news !</h1>
     </section>
-    <section class="featured-posts">
-        <PostPreview 
-          id="1"
-          thumbnail="https://dailyscrawl.com/wp-content/uploads/2018/05/Tech-sector.jpg"
-          title="First post title"
-          previewText="This is my first post !"/>
-         <PostPreview 
-          id="2"
-          thumbnail="https://dailyscrawl.com/wp-content/uploads/2018/05/Tech-sector.jpg"
-          title="First post title 2"
-          previewText="This is my first post 2!"/>
-          <PostPreview 
-          id="3"
-          thumbnail="https://dailyscrawl.com/wp-content/uploads/2018/05/Tech-sector.jpg"
-          title="First post title 3"
-          previewText="This is my first post 3!"/>
-    </section>
+    <PostList/>
   </div>
     
 </template>
@@ -56,13 +40,6 @@
   }
 }
 
-.featured-posts {
-  display: flex;
-  padding: 20px;
-  box-sizing: border-box;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-}
+
 
 </style>
