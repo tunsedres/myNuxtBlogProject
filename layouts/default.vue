@@ -3,8 +3,8 @@
     <TheHeader @sidenavToggle = "displaySidenav = !displaySidenav"/>
     <TheSidenav 
       :show="displaySidenav"
-      @close="displaySidenav = false" />
-      <nuxt/>
+      @close="displaySidenav = false"/>
+      <Nuxt/>
   </div>
   
 </template>

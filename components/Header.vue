@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <header>
         bla bla bla
     </header>
