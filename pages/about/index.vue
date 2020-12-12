@@ -8,6 +8,7 @@
   </div>
 </template>
 
+
 <style scoped>
 .about-page {
   text-align: center;

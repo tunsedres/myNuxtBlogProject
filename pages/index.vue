@@ -1,8 +1,5 @@
 <template>
   <div class="home-page">
-    <section class="intro">
-      <h1>Get the latest tech news !</h1>
-    </section> 
     <section class="featured-posts">
         <PostPreview 
           id="1"
@@ -23,10 +20,6 @@
   </div>
     
 </template>
-
-<script>
-
-</script>
 
 <style scoped>
   .intro {
