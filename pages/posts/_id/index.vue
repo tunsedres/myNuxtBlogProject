@@ -1,11 +1,11 @@
 <template>
     <div class="single-post-page">
         <section>
-            <h1 class="post-title">Title of the Post</h1>
+            <h1 class="post-title">{{ loadedPost.title }}</h1>
             <div class="post-details">
-                <div>Last updated on XXX</div>
-                <div>Written by NAME</div>
-                <p class="post-content">Content of the post</p>
+                <div>{{ loadedPost.updatedDate }}</div>
+                <div>Written by {{ loadedPost.author }}</div>
+                <p class="post-content">{{ loadedPost.content }}</p>
             </div>
         </section>
         <section class="post-feedback">
@@ -13,6 +13,26 @@
         </section>
     </div>
 </template>
+
+<script>
+export default {
+  asyncData(context, callback) {
+    setTimeout(() => {
+      callback(null, {
+        loadedPost: {
+          id: "1", 
+          title:"First Post (ID: " + context.params.id + ")", 
+          thumbnail: "https://dailyscrawl.com/wp-content/uploads/2018/05/Tech-sector.jpg", 
+          previewText: "preview text",
+          author: "test author",
+          updatedDate: new Date(),
+          content: "bla bla some dummy text which is definetly not the preview"
+          }
+      })
+    }, 1000)
+  },
+}
+</script>
 
 <style scoped>
 .single-post-page {
