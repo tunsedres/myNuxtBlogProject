@@ -1,6 +1,7 @@
 <template>
     <div class="single-post-page">
         <section>
+            <button class="btn btn-danger" @click="deletePost">DELETE</button>
             <h1 class="post-title">{{ loadedPost.title }}</h1>
             <div class="post-details">
                 <div>{{ loadedPost.updatedDate }}</div>
@@ -15,22 +16,29 @@
 </template>
 
 <script>
+
 export default {
-  asyncData(context, callback) {
-    setTimeout(() => {
-      callback(null, {
-        loadedPost: {
-          id: "1", 
-          title:"First Post (ID: " + context.params.id + ")", 
-          thumbnail: "https://dailyscrawl.com/wp-content/uploads/2018/05/Tech-sector.jpg", 
-          previewText: "preview text",
-          author: "test author",
-          updatedDate: new Date(),
-          content: "bla bla some dummy text which is definetly not the preview"
-          }
+  async asyncData({ $axios, params }) {
+    return $axios.$get('https://nuxt-blog-db822-default-rtdb.firebaseio.com/posts/' + params.id + '.json')
+      .then(res => {
+        return {
+          loadedPost: res
+        }
       })
-    }, 1000)
   },
+  methods: {
+    deletePost() {
+      this.$store.dispatch('deletePost', this.$route.params.id).then(() => {
+        this.$router.push('/posts')
+      })
+    }
+  },
+  head: {
+    title: 'Tuncay ın site',
+    meta: [
+      { hid: 'description', name: 'description', content: 'heyu heyt' }
+    ]
+  } 
 }
 </script>
 

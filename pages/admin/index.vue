@@ -5,14 +5,19 @@
         </section>
         <section class="existing-posts">
             <h1>Existing Posts</h1>
-            <PostList isAdmin />
+            <PostList isAdmin :posts="loadedPosts" />
         </section>
     </div>
 </template>
 
 <script>
 export default {
-    layout: 'admin'
+    layout: 'admin',
+    computed: {
+      loadedPosts() {
+          return this.$store.getters.loadedPosts
+      }
+  }
 }
 </script>
 
