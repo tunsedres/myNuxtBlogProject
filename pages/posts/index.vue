@@ -6,11 +6,11 @@
 
 <script>
 export default {
-  computed: {
-      loadedPosts() {
-          return this.$store.getters.loadedPosts
-      }
-  }
+    computed: {
+        loadedPosts() {
+            return this.$store.getters.loadedPosts
+        }
+    }
 }
 </script>
 

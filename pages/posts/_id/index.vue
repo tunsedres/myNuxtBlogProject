@@ -4,8 +4,8 @@
             <button class="btn btn-danger" @click="deletePost">DELETE</button>
             <h1 class="post-title">{{ loadedPost.title }}</h1>
             <div class="post-details">
-                <div>{{ loadedPost.updatedDate }}</div>
-                <div>Written by {{ loadedPost.author }}</div>
+                <div class="post-detail">{{ loadedPost.updatedDate |date }} </div>
+                <div class="post-detail">Written by {{ loadedPost.author }}</div>
                 <p class="post-content">{{ loadedPost.content }}</p>
             </div>
         </section>
@@ -19,7 +19,7 @@
 
 export default {
   async asyncData({ $axios, params }) {
-    return $axios.$get('https://nuxt-blog-db822-default-rtdb.firebaseio.com/posts/' + params.id + '.json')
+    return $axios.$get('/posts/' + params.id + '.json')
       .then(res => {
         return {
           loadedPost: res

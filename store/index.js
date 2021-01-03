@@ -1,5 +1,8 @@
+import Cookie from 'js-cookie'
+
 export const state = () => ({
-    loadedPosts: []
+    loadedPosts: [],
+    token: null
 })
 
 export const mutations = {
@@ -20,12 +23,18 @@ export const mutations = {
             post => post.id === postId
         )
         state.loadedPosts.splice(postIndex)
+    },
+    setToken(state, token) {
+       state.token = token
+    },
+    clearToken(state) {
+        state.token = null
     }
 }
 
 export const actions = {
     nuxtServerInit({ commit }, { dispatch }) {
-         return this.$axios.$get('https://nuxt-blog-db822-default-rtdb.firebaseio.com/posts.json')
+         return this.$axios.$get('/posts.json')
             .then(res => {
                 const postsArray = []
                 for (const key in res) {
@@ -33,7 +42,7 @@ export const actions = {
                 }
                 commit('setPosts', postsArray)
             })
-            .catch(e => context.error(e))
+            .catch(e => console.log(e))
     },
     setPosts({commit}, posts) {
         commit('setPosts', posts)
@@ -43,7 +52,7 @@ export const actions = {
             ...post,
             updatedDate: new Date()
         }
-        return this.$axios.$post('https://nuxt-blog-db822-default-rtdb.firebaseio.com/posts.json', createdPost)
+        return this.$axios.$post('/posts.json?auth='+ this.state.token, createdPost)
         .then(res => {
             commit('addPost', { ...createdPost, id: res.name})
         })
@@ -51,23 +60,78 @@ export const actions = {
         
     },
     editPost({commit}, editedPost) {
-        return this.$axios.$put('https://nuxt-blog-db822-default-rtdb.firebaseio.com/posts/' + 
-            editedPost.id + '.json', editedPost)
+        console.log()
+        return this.$axios.$put('/posts/' + 
+            editedPost.id + '.json?auth='+ this.state.token, editedPost)
         .then(res => {
             commit('editPost', editedPost)
         })
     },
     deletePost({commit}, postId) {
-        return this.$axios.$delete('https://nuxt-blog-db822-default-rtdb.firebaseio.com/posts/' + postId + '.json')
+        return this.$axios.$delete('/posts/' + postId + '.json')
         .then(res => {
             commit('deletePost', postId)
         })
-    }
+    },
+    authenticateUser({commit}, authData) {
+        let authUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + process.env.fbAPIKey
+      
+        if(!authData.isLogin) {
+            authUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + process.env.fbAPIKey
+        }
+
+        this.$axios.$post(authUrl, 
+        {
+            email: authData.email,
+            password: authData.password,
+            returnSecureToken: true
+        }
+        ).then(result => {
+            commit('setToken', result.idToken)
+            localStorage.setItem('token', result.idToken)
+            localStorage.setItem('tokenExpiration', new Date().getTime() + Number.parseInt(result.expiresIn) * 1000)
+
+            Cookie.set('jwt', result.idToken)
+            Cookie.set('expirationDate', new Date().getTime() + Number.parseInt(result.expiresIn) * 1000)
+        })
+        .catch(e =>console.log(e)) 
+    },
+    initAuth({commit}, req) {
+        
+        let token
+        let expirationDate
+        if(req) {
+            if(!req.headers.cookie) {
+                return
+            }
+            const jwtCookie = req.headers.cookie.split(';').find(c=> c.trim().startsWith('jwt='))
+            if(!jwtCookie) {
+                return
+            }
+            token = jwtCookie.split('=')[1]
+
+            expirationDate = req.headers.cookie.split(';').find(c=> c.trim().startsWith('expirationDate=')).split('=')[1]
+            
+        }else {    
+            token = localStorage.getItem('token')
+            expirationDate = localStorage.getItem('tokenExpiration')
+    
+        }
+        if(new Date().getTime() > +expirationDate || !token) {
+            commit('clearToken')
+            return
+        }
+        commit('setToken', token)
+    }    
+    
 }
 
 export const getters = {
     loadedPosts(state) {
         return state.loadedPosts
+    },
+    isAuthenticated(state) {
+        return state.token != null
     }
 }
   
